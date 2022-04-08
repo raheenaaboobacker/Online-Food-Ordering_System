@@ -1,0 +1,17 @@
+#mainbg{
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    padding: 0;
+    -webkit-background-size:cover ;
+    /* background-attachment: fixed; */
+  
+    background-image: url("https://www.smartshape.ca/content/uploads/2017/04/healthy-food-1140x778.jpg");
+/* opacity: .9; */
+}
+#bg{
+    /* background: rgb(238, 229, 229); */
+    
+min-height: 500px;
+   
+}

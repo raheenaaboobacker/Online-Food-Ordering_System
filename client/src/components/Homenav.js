@@ -8,8 +8,8 @@ function Homenav() {
       <Navbar.Brand href="#home"><h2>FOODEE</h2></Navbar.Brand>
       <Nav className="d-flex">
       <Nav.Link href="login"><h4>Login</h4></Nav.Link>
-        <Nav.Link href="#features"><h4>CART</h4></Nav.Link>
-        <Nav.Link href="#pricing"><h4>ABOUT US</h4></Nav.Link>
+        <Nav.Link href="register"><h4>Register</h4></Nav.Link>
+        <Nav.Link href="aboutus"><h4>ABOUT US</h4></Nav.Link>
       </Nav>
     </Container>
     </Navbar></div>

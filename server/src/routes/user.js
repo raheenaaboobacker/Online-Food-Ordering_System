@@ -6,8 +6,11 @@ var jwt=require("jsonwebtoken");
 const check=require('../middleware/chech-auth');
 var bcrypt=require("bcrypt");
 const productsdata = require("../models/products");
+const categorydata=require("../models/category")
 const cartdata = require("../models/cart");
 const { response } = require("express");
+const {OAuth2Client}=require('google-auth-library')
+const client= new OAuth2Client("302497682067-pb44ii1kcldeato5m754ftj600tsp9on.apps.googleusercontent.com")
 // const cartdata=require("../models/cart")
 userRouter.post('/register',function(req,res){
     console.log(" running")
@@ -15,7 +18,9 @@ userRouter.post('/register',function(req,res){
        
    
     var item = {
-        name: req.body.name,
+        uname:req.body.uname,
+        email: req.body.email,
+        address:req.body.address,
         password:hash
        
     }
@@ -27,15 +32,15 @@ userRouter.post('/register',function(req,res){
 })
 userRouter.post('/login',(req,res)=>{
     var i = {
-        name: req.body.name,
+        email: req.body.email,
         password: req.body.password
     }
 console.log("i"+JSON.stringify(i))
-    var n = i.name;
+    var n = i.email;
      var p = i.password
     
     userdata.findOne({
-        name:i.name
+        email:i.email
     }).then((demo)=>{
         console.log("demo"+demo)
         if (demo) {
@@ -43,9 +48,9 @@ console.log("i"+JSON.stringify(i))
      return bcrypt.compare(req.body.password,demo.password).then((result)=>{
          console.log("result"+result);
          if(result){
-                var token=jwt.sign({name:demo.name},"key")           //generate token
+                var token=jwt.sign({email:demo.email},"key")           //generate token
                 console.log(token)
-                res.status(200).json({data:'true',username:demo.name,userid:demo._id,token:token})
+                res.status(200).json({data:'true',useremail:demo.email,userid:demo._id,username:demo.uname,token:token})
          }
          else{
             res.json({data:'password not found'})
@@ -58,10 +63,32 @@ console.log("i"+JSON.stringify(i))
         console.log("user not found")
      }
 })
-    // }).catch(()=>
-    // {res.status(400).json({data:'user not found'})})      
-     
+   
     
+})
+userRouter.post('/googlelogin',(req,res)=>{
+    const {tokenId}=req.body;
+    console.log(tokenId);
+    client.verifyIdToken({idToken:tokenId,audience:"302497682067-pb44ii1kcldeato5m754ftj600tsp9on.apps.googleusercontent.com"}).then(response=>{
+        const {email_verified,name,email}=response.payload;
+        console.log("detailssss"+JSON.stringify(response.payload.email));
+
+        userdata.findOne({
+            email:response.payload.email
+        }).then((data)=>{
+       console.log(("google login"+data));
+       if(data){
+        var token=jwt.sign({email:data.email},"key")           //generate token
+        console.log(token)
+        res.status(200).json({useremail:data.email,userid:data._id,username:data.uname,token:token})   
+       }else{
+           res.status(200).json("no-user") 
+               
+       }
+    })
+
+       
+    })
 })
 userRouter.get('/home',(req,res)=>{
     productsdata.find().then((data)=>{
@@ -78,23 +105,34 @@ console.log("tokenNameeeeee"+tokenName);
 res.status(200).json({data:data,data:tokenName})
    })
 }))
-userRouter.get('/showuseritems/:id',((req,res)=>{
-    const id=req.params.id
-    console.log(id);
-    productsdata.find({category_id:id})
-    .then((data) => {
-        // console.log("products data is" +
-        //     data)
-            res.status(200).json({data:data})
-
-    })
+userRouter.get('/showCategory',((req,res)=>{
+   
+    categorydata.find().then((data)=>{
+// console.log("category data"+data); 
+res.status(200).json({data:data})
+   })
 }))
+// userRouter.get('/showproduct/:id',((req,res)=>{
+//     const id=req.params.id
+//     console.log("id"+id);
+//     // productsdata.find({category_id:id})
+//     // .then((data) => {
+//     //     // console.log("products data is" +
+//     //     //     data)
+//     //         res.status(200).json({data:data})
+
+//     // })
+// }))
+// userRouter.post('/showproduct/:id',((req,res)=>{
+//     const id=req.params.id;
+//     console.log("category id"+id);
+// }))
 userRouter.get('/showitems/:id',((req,res)=>{
     const id=req.params.id
     productsdata.find({category_id:id})
     .then((data) => {
-        // console.log("products data is" +
-        //     data)
+        console.log("products data is" +
+            data)
             res.status(200).json({data:data})
 
     })
@@ -121,9 +159,10 @@ userRouter.post('/addcartdata/:id/:quantity/:userid',((req,res)=>{
       var item={
         product_id:id,
         user_id:userid,
+        qt:quantity,
         total:total
       }
-      console.log(item)
+    //   console.log(item)
       const cart=cartdata(item)
       cart.save().then((response)=>{
           console.log(response)
@@ -133,6 +172,7 @@ userRouter.post('/addcartdata/:id/:quantity/:userid',((req,res)=>{
 }))
 userRouter.post('/getCartData/:id',((req,res)=>{
     const id=req.params.id;
+    // console.log(id);
     var totalamount=0
     // console.log(id); cartdata.find({user_id:id})
     // .then((resp)=>{
@@ -190,7 +230,7 @@ cartdata.aggregate([
 
 ])
 .then((resp)=>{
-    // console.log("aggregated data"+JSON.stringify(resp.total));
+    // console.log("aggregated data"+JSON.stringify(resp));
     
       res.status(200).json({data:resp})
 })
@@ -199,6 +239,12 @@ userRouter.delete('/deleteCartItem/:id',(req,res)=>{
     const id=req.params.id
     console.log(id);
     cartdata.findByIdAndDelete({_id:id}).then((resp)=>{console.log("deleted data"+resp);})
+})
+userRouter.post('/rating/:id/:p_id:/rate:/reviews',(req,res)=>{
+const id=req.params.id
+const P_id=req.params.P_id
+const rate=req.params.rate
+const reviews=req.params.reviews
 })
 
 module.exports=userRouter;

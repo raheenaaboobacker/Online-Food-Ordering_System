@@ -3,13 +3,14 @@ import { useNavigate,Link } from 'react-router-dom';
 import {Form,Button,Container,Row,Col} from "react-bootstrap"
 import axios from 'axios'
 import {TextField} from '@mui/material'
-
+import './register.css'
 function Register() {
   const navigate=useNavigate()
     const [contacts,setContacts]=useState({
-        name:'',
-        password:''
-
+      uname:" ",
+      email:'',
+        password:'',
+address:" "
     });
   
     const handleInputChange=(e)=>{
@@ -38,12 +39,22 @@ function Register() {
           <Row>
             <Col></Col>
             <Col xs={6}>
-              <div id="logindiv"><h2>REGISTER</h2>
+              <div id="registerdiv"><h2>SIGN UP</h2>
           <form className='container' onSubmit={addContacts}>
   <Form.Group className="mb-3" controlId="formBasic">
-   
-    <TextField fullWidth  id="outlined-basic" label="Name" variant="outlined" name='name' onChange={handleInputChange} value={contacts.name} required/>
-   
+  <TextField fullWidth  id="outlined-basic" label="Name" variant="outlined" name='uname' 
+     onChange={handleInputChange} value={contacts.uname} required/><br/><br/>
+    <TextField fullWidth  id="outlined-basic" label="Email" variant="outlined" name='email' type="email"
+     onChange={handleInputChange} value={contacts.email} required/><br/><br/>
+    <TextField fullWidth
+          id="outlined-multiline-static"
+          label="Address"
+          multiline
+          rows={4} name='address'
+          onChange={handleInputChange} 
+          value={contacts.address}
+       required
+        />
   </Form.Group>
  
   <Form.Group className="mb-3" controlId="formBasic">
@@ -71,30 +82,7 @@ function Register() {
             <Col></Col>
           </Row>
         </Container>
-        {/* <div id='div1'>
-          <h2>Register</h2>
-          <form className='container' onSubmit={addContacts}>
-  <Form.Group className="mb-3" controlId="formBasic">
-    <Form.Label>Name</Form.Label>
-    <input type="text" placeholder="Enter name" name='name' onChange={handleInputChange} value={contacts.name} required/>
-   
-  </Form.Group>
- 
-  <Form.Group className="mb-3" controlId="formBasic">
-    <Form.Label>Number</Form.Label>
-    <input type="number" placeholder="Enter password" name='password' onChange={handleInputChange} value={contacts.password} required />
-   
-  </Form.Group>
-  
-  <Button variant="success" type="submit" >
-    Submit
-  </Button>
-</form><br/><Link to='/login'>
-<Button variant="success" type="submit" >
-    login to your account
-  </Button>
-  </Link>
-  </div> */}
+       
       </div>
     );
   }

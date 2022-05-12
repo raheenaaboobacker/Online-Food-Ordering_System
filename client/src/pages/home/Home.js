@@ -72,14 +72,14 @@ function Home() {
       <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
         <Search />
       </IconButton>
-     
+   
     </Paper></Col>
           <Col></Col>
         </Row>
       </div>
     </div>
    
-    <Row xs={1} md={2} className="g-4">
+    <Row>
     
     {
     category.filter((filterdata)=>{
@@ -87,14 +87,16 @@ function Home() {
         return filterdata
       }
     }).map((u)=>(
-                <Card  id="cd" >
-                <Card.Img variant="top" style={{width:"450px",height:"450px"}} src={`./upload/${u.image}`} />
+      <div style={{justifyContent:"center",display:"flex",width:"25%",paddingTop:"100px"}}>
+      <Card  style={{width:"300px",height:"300px"}} >
+      <Card.Img variant="top" style={{width:"300px",height:"200px"}}  src={`./upload/${u.image}`} />
                 <Card.Body>
                   <Card.Title>{u.productName}</Card.Title>
                  
                   
                 </Card.Body>
               </Card>
+              </div>
     ))}
    
 </Row>

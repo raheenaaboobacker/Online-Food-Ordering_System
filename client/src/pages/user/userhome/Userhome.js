@@ -8,15 +8,16 @@ import axios from "axios"
 import {Link, useNavigate} from "react-router-dom"
 import {Logincontext} from '../../../context/Logincontext'
 import Usernav from '../../../components/Usernav'
+import Footer from '../../../components/footer/Footer'
 function Userhome() {
   const navigate=useNavigate();
-
-  // const [data,setData]=useState([ ]);
+// const [userdata,setUserdata]=useState([ ])
   const{userContacts}=useContext(Logincontext);
   const [category,setCategory]=useState([ ])
   const [item,setItem]=useState("")
   const [data,setData]=useState([])
-  const userid=""
+  let userid=""
+  let username=""
   const [quantity,setQuantity]=useState(" ")
   const [open, setOpen] = React.useState(false);
   const [temp, setTemp]=useState([]
@@ -43,14 +44,16 @@ function Userhome() {
   };
 
   useEffect(()=>{
-    // userid=userContacts
-    // console.log(userid);
+    // console.log("userContacts"+userContacts);
+     userid=localStorage.getItem("userid")
+     username=localStorage.getItem("useremail")
+    console.log("userid"+userid);
 const tokenValue=localStorage.getItem("localtoken");
 // console.log("tokenValue"+tokenValue)
     axios.get("http://localhost:5000/userhome",{headers: {"Authorization":`Bearer ${tokenValue}`}}
      
     ).then(resp=>{
-      // console.log("resp"+JSON.stringify(resp))
+      console.log("resp"+JSON.stringify(resp))
 
       setData(resp.data.data)
       console.log(data)
@@ -75,8 +78,8 @@ const tokenValue=localStorage.getItem("localtoken");
       }
       const addtocart=(id)=>{
         console.log(("inside adaa"+id));
-        axios.post(`http://localhost:5000/addcartdata/${id}/${quantity}/${userContacts.id}`).then((response)=>{
-          console.log(response);
+        axios.post(`http://localhost:5000/addcartdata/${id}/${quantity}/${localStorage.getItem("userid")}`).then((response)=>{
+          console.log("add cart data"+response);
           
         })
         navigate('/addtocart')
@@ -118,7 +121,8 @@ const tokenValue=localStorage.getItem("localtoken");
         </Row>
       </div>
     </div>
-    <h2>welcome {userContacts.name}</h2>
+   
+
     <Row xs={1} md={2} className="g-4">
     
     {
@@ -127,8 +131,10 @@ const tokenValue=localStorage.getItem("localtoken");
         return filterdata
       }
     }).map((u)=>(
-                <Card  id="cd" >
-                <Card.Img variant="top" style={{width:"450px",height:"450px"}} src={`./upload/${u.image}`} />
+      
+      <div style={{justifyContent:"center",display:"flex",width:"25%"}}>
+                <Card  style={{width:"300px",height:"300px"}} >
+                <Card.Img variant="top" style={{width:"300px",height:"200px"}} src={`./upload/${u.image}`} />
                 <Card.Body>
                   <Card.Title>{u.productName}      <span>${u.price}</span></Card.Title>
                
@@ -165,9 +171,12 @@ const tokenValue=localStorage.getItem("localtoken");
       </Modal>
                 </Card.Body>
               </Card>
+              </div>
     ))}
    
 </Row>
+
+<Footer/>
     </div>
   )
 }

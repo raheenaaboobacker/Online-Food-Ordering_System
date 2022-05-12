@@ -3,7 +3,9 @@ mongoose.connect("mongodb+srv://raheena:raheena%40123@cluster1.zmtjd.mongodb.net
 const Schema=mongoose.Schema;
 
 const userSchema= new Schema({
-    name:String,
+    uname:String,
+    email:String,
+    address:String,
     password:String
 },{strict:false});
 var userdata=mongoose.model('userdata',userSchema);

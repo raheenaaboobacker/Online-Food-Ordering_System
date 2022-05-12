@@ -38,8 +38,8 @@ const deleteCategory=(id)=>{
   <Row xs={1} md={2} className="g-4">
     
     {category.map((u)=>(
-                <Card  id="cd" >
-                <Card.Img variant="top" style={{width:"450px",height:"450px"}} src={`./upload/${u.image}`} />
+                <Card  style={{width:"330px",height:"500px",paddingLeft:"10px",marginBlock:"20px"}} >
+                <Card.Img variant="top" style={{width:"300px",height:"290px"}} src={`./upload/${u.image}`} />
                 <Card.Body>
                   <Card.Title>{u.categoryName}</Card.Title>
                   <Link to={`/showitems/${u._id}`}>

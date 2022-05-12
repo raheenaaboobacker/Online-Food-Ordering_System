@@ -4,8 +4,10 @@ import Usernav from '../../../components/Usernav'
 import { Logincontext } from '../../../context/Logincontext'
 import { Container,Row,Col } from 'react-bootstrap';
 import {Card,CardMedia,CardContent,Typography,CardActions,Button} from '@mui/material'
-
+import { Link, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 function Addtocart() {
+const navigate=useNavigate()
   const { userContacts } = useContext(Logincontext);
   let grandtotal=0
   
@@ -22,20 +24,22 @@ function Addtocart() {
 
   useEffect(() => {
     // console.log(userContacts);
-    axios.post(`http://localhost:5000/getCartData/${userContacts.id}`).then((response) => {
+    axios.post(`http://localhost:5000/getCartData/${localStorage.getItem("userid")}`).then((response) => {
       setItem(response.data.data)
       // console.log("cart dataaa"+JSON.stringify(item))
 
       setItemFilter(item.filter((filterdata) => {
-        return filterdata.user_id.includes(userContacts.id)
+        return filterdata.user_id.includes(localStorage.getItem("userid"))
       }))
       // console.log("1sy map" + JSON.stringify(itemFilter));
 
     })
   })
+  
  const deleteCartItem=(id)=>{
 axios.delete(`http://localhost:5000/deleteCartItem/${id}`).then((response)=>{
   console.log(response);
+  navigate('/addtocart')
 })
  }
   return (
@@ -59,7 +63,7 @@ axios.delete(`http://localhost:5000/deleteCartItem/${id}`).then((response)=>{
     <Card  style={{ maxWidth: 345,marginTop:50 }}>
        <CardMedia
         component="img"
-        height="140"
+        height="190"
         // src={`./upload/${u.image}`}
         image={`./upload/${product.image}`}
         alt="green iguana"
@@ -69,8 +73,9 @@ axios.delete(`http://localhost:5000/deleteCartItem/${id}`).then((response)=>{
         {product.productName}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-       unit price: {product.price}<br/>
-        total:{data.total}
+       Unit price: {product.price}<br/>
+Quantity:{data.qt}<br/>
+        Total:{data.total}
         
         </Typography>
       </CardContent>
@@ -87,7 +92,7 @@ axios.delete(`http://localhost:5000/deleteCartItem/${id}`).then((response)=>{
 }
 )  }
 <h3>Grand Total:{grandtotal}</h3>
-<Button>Payment</Button>
+<Link to={`/payment/${grandtotal}`}><Button >Payment</Button></Link>
 </Col>
 
           </Container>

@@ -14,6 +14,8 @@ import Showuseritems from './pages/user/showuseritems/Showuseritems';
 import {Logincontext} from "./context/Logincontext"
 import Addtocart from './pages/user/addtocart/Addtocart';
 import Userhome from './pages/user/userhome/Userhome';
+import Payment from './pages/user/Payment';
+import Ratingpage from './pages/user/Ratingpage';
 
 function App() {
 
@@ -52,7 +54,8 @@ function App() {
       <Route exact path='/addtocart' element={<Addtocart/>}/>
         <Route exact path='/login' element={<Login/>}/>
         <Route exact path='/home' element={<Home/>}/>
-        
+       <Route exact path='/payment/:total' element={<Payment/>}/>
+        <Route exact path='/ratingpage' element={<Ratingpage/>}/>
       </Routes>
       </BrowserRouter>
       </Logincontext.Provider>
